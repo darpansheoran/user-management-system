@@ -1,0 +1,615 @@
+<div class="showcase pt-5 w-75 mx-auto">
+  <!-- showcase-topbar -->
+  <nav class="nav bg-primary text-light position-relative">
+    <i class="fas fa-users p-2 fs-4"></i>
+    <h4 class="position-absolute w-100 pt-1">User Data List</h4>
+  </nav>
+
+  <!-- search user and add user -->
+  <div class="input-group input-group-sm my-2 px-3">
+    <input
+      type="text"
+      class="form-control"
+      aria-label="Search"
+      aria-describedby="search users"
+      placeholder="Search"
+      ng-model="searchText"
+    />
+    <!-- Button trigger modal -->
+    <button
+      type="button"
+      class="btn btn-outline-primary ms-2"
+      data-bs-toggle="modal"
+      data-bs-target="#formModal"
+      ng-click="resetForm()"
+    >
+      Add user
+    </button>
+    <!-- change number of rows -->
+    <div class="dropdown">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-primary ms-2 dropdown-toggle rounded-0"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        Rows
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="rowSelect">
+        <li>
+          <a class="dropdown-item" href="" ng-click="pageSize=5;setPage(1,5)"
+            >5</a
+          >
+        </li>
+        <li>
+          <a class="dropdown-item" href="" ng-click="pageSize=10;setPage(1,10)"
+            >10</a
+          >
+        </li>
+        <li>
+          <a class="dropdown-item" href="" ng-click="pageSize=15;setPage(1,15)"
+            >15</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="table-responsive px-3">
+    <table class="table table-hover table-bordered">
+      <caption>
+        {{((pager.currentPage-1)*pager.pageSize)+1}}-{{(pager.currentPage*pager.pageSize
+        > pager.totalItems ? pager.totalItems :
+        pager.currentPage*pager.pageSize)}} out of {{pager.totalItems}}
+      </caption>
+      <thead>
+        <tr>
+          <th class="col-name">Name</th>
+          <th class="col-email">Email</th>
+          <th class="col-phone">Phone</th>
+          <th class="col-gender">Gender</th>
+          <th class="col-age">Age</th>
+        </tr>
+      </thead>
+      <tbody title="Click for more details">
+        <tr
+          ng-click="setEmployee(employee)"
+          data-bs-toggle="modal"
+          data-bs-target="#completeDetails"
+          ng-repeat="employee in employees |filter:searchText "
+        >
+          <td ng-if="employee.name.fullname">{{employee.name.fullname}}</td>
+          <td ng-if="!employee.name.fullname">
+            {{employee.name.first +" "+ employee.name.last}}
+          </td>
+          <td>{{employee.email}}</td>
+          <td>{{employee.phone}}</td>
+          <td><i class="fas fa-{{employee.gender}}"></i></td>
+          <td>{{employee.dob.age}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- pagination -->
+  <ul
+    ng-if="pager.pages.length"
+    class="pagination d-flex justify-content-center py-3"
+  >
+    <li ng-class="{disabled:pager.currentPage === 1}" class="page-item">
+      <a class="page-link" ng-click="setPage(1,pageSize)">First</a>
+    </li>
+    <li ng-class="{disabled:pager.currentPage === 1}" class="page-item prev">
+      <a class="page-link" ng-click="setPage(pager.currentPage - 1,pageSize)"
+        ><span aria-hidden="true">&laquo;</span></a
+      >
+    </li>
+    <li
+      ng-repeat="page in pager.pages"
+      ng-class="{active:pager.currentPage === page}"
+      class="page-item"
+    >
+      <a class="page-link" ng-click="setPage(page,pageSize)">{{page}}</a>
+    </li>
+    <li
+      ng-class="{disabled:pager.currentPage === pager.totalPages}"
+      class="page-item next"
+    >
+      <a class="page-link" ng-click="setPage(pager.currentPage + 1,pageSize)"
+        ><span aria-hidden="true">&raquo;</span></a
+      >
+    </li>
+    <li
+      ng-class="{disabled:pager.currentPage === pager.totalPages}"
+      class="page-item"
+    >
+      <a class="page-link" ng-click="setPage(pager.totalPages,pageSize)"
+        >Last</a
+      >
+    </li>
+  </ul>
+  <!-- Modal form -->
+  <div
+    class="modal fade"
+    id="formModal"
+    tabindex="-1"
+    style="overflow-y: auto"
+    data-bs-backdrop="static"
+    aria-labelledby="userInputModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5
+            ng-show="!selectedEmployee"
+            class="modal-title"
+            id="formModalLabel"
+          >
+            User registration form
+          </h5>
+          <h5
+            ng-show="selectedEmployee"
+            class="modal-title"
+            id="formModalLabel"
+          >
+            Edit user details
+          </h5>
+          <button
+            type="button"
+            class="btn-close form-modal-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <!-- form -->
+          <form
+            class="needs-validation text-start"
+            ng-submit="formSubmit()"
+            novalidate
+          >
+            <!-- personal details -->
+            <div class="row g-3">
+              <!-- name -->
+              <div class="col-md-6">
+                <label for="username" class="form-label">Name:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  ng-model="name"
+                  id="username"
+                  required
+                />
+                <div class="invalid-feedback">Please provide a name.</div>
+              </div>
+              <!-- email -->
+              <div class="col-md-6">
+                <label for="userEmail" class="form-label">Email:</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="userEmail"
+                  ng-model="email"
+                  required
+                />
+                <div class="invalid-feedback">Provide a valid email.</div>
+              </div>
+              <!-- address -->
+              <div class="col-md-12">
+                <label for="userAddress" class="form-label">Address:</label>
+                <textarea
+                  class="form-control"
+                  id="userAddress"
+                  ng-model="address"
+                  required
+                ></textarea>
+                <div class="invalid-feedback">Please provide an address.</div>
+              </div>
+              <!-- phone -->
+              <div class="col-md-5">
+                <label for="userPhone" class="form-label">Phone:</label>
+                <input
+                  type="tel"
+                  minlength="10"
+                  class="form-control"
+                  ng-model="phone"
+                  id="userPhone"
+                  required
+                />
+                <div class="invalid-feedback">Provide a valid Phone no.</div>
+              </div>
+              <!-- gender -->
+              <div class="col-md-3">
+                <label for="userGender" class="form-label">Gender:</label>
+                <select
+                  class="form-select"
+                  aria-label="select"
+                  id="userGender"
+                  required
+                >
+                  <option
+                    ng-selected="selectedEmployee.gender == 'male'"
+                    value="male"
+                  >
+                    Male
+                  </option>
+                  <option
+                    ng-selected="selectedEmployee.gender == 'female'"
+                    value="female"
+                  >
+                    Female
+                  </option>
+                </select>
+                <div class="invalid-feedback">Select an option.</div>
+              </div>
+              <!-- dob -->
+              <div class="col-md-4">
+                <label for="userDob" class="form-label">Dob:</label>
+                <input
+                  id="userDob"
+                  type="date"
+                  min=""
+                  max="{{today | date : 'y-MM-dd'}}"
+                  class="form-control"
+                  ng-model="dob"
+                  required
+                />
+                <div class="invalid-feedback">Select your birthday.</div>
+              </div>
+            </div>
+            <!-- Qualifications -->
+            <div class="row g-1 text-center">
+              <h5 class="mt-4">Education & Qualification(optional)</h5>
+              <p class="text-danger py-0 my-1" id="error" style="display: none">
+                Please fill all the fields.
+              </p>
+              <!-- qualifications -->
+              <div class="col-md-12 py-2" ng-repeat="degree in degrees">
+                <div class="row g-1">
+                  <!-- education -->
+                  <div class="col-md-2">
+                    <label
+                      ng-if="$index == 0"
+                      for="education"
+                      class="form-label"
+                      >Education</label
+                    >
+                    <select
+                      class="form-select"
+                      aria-label="education"
+                      ng-model="degree.education"
+                      ng-required="degrees.length > 1"
+                    >
+                      <option value="" disabled>
+                        <hr />
+                      </option>
+                      <option
+                        ng-selected="degree.education == 'Phd'"
+                        value="Phd"
+                      >
+                        Phd.
+                      </option>
+                      <option
+                        ng-selected="degree.education == 'Post Graduation'"
+                        value="Post Graduation"
+                      >
+                        Post Graduation
+                      </option>
+                      <option
+                        ng-selected="degree.education == 'Bachelor\'s degree'"
+                        value="Bachelor's degree"
+                      >
+                        Bachelor's degree
+                      </option>
+                      <option
+                        ng-selected="degree.education == 'Diploma'"
+                        value="Diploma"
+                      >
+                        Diploma
+                      </option>
+                      <option
+                        ng-selected="degree.education == 'High school'"
+                        value="High school"
+                      >
+                        High school
+                      </option>
+                    </select>
+                  </div>
+                  <!-- institute -->
+                  <div class="col-md-2">
+                    <label
+                      ng-if="$index == 0"
+                      for="institute"
+                      class="form-label"
+                      >Institute</label
+                    >
+                    <input
+                      type="text"
+                      ng-model="degree.institute"
+                      class="form-control"
+                      ng-required="degrees.length > 1"
+                    />
+                  </div>
+                  <!-- Start Date -->
+                  <div class="col-md-2">
+                    <label
+                      ng-if="$index == 0"
+                      for="startDate"
+                      class="form-label"
+                      >Start-date</label
+                    >
+                    <input
+                      type="date"
+                      min=""
+                      max="{{today | date : 'y-MM-dd'}}"
+                      ng-model="degree.startDate"
+                      class="form-control"
+                      ng-required="degrees.length > 1"
+                    />
+                    <div class="invalid-feedback">
+                      Provide a valid start date.
+                    </div>
+                  </div>
+                  <!-- End Date -->
+                  <div class="col-md-2">
+                    <label ng-if="$index == 0" for="endDate" class="form-label"
+                      >End-date</label
+                    >
+                    <input
+                      type="date"
+                      min="{{degree.startDate | date : 'y-MM-dd'}}"
+                      max=""
+                      ng-model="degree.endDate"
+                      class="form-control"
+                      ng-required="degrees.length > 1"
+                    />
+                    <div class="invalid-feedback">
+                      Provide a valid end date.
+                    </div>
+                  </div>
+                  <!-- marks -->
+                  <div class="col-md-2">
+                    <label ng-if="$index == 0" for="marks" class="form-label"
+                      >Marks</label
+                    >
+                    <input
+                      type="text"
+                      ng-model="degree.marks"
+                      class="form-control"
+                      ng-required="degrees.length > 1"
+                    />
+                  </div>
+                  <!-- buttons -->
+                  <div class="col-md-2">
+                    <label ng-if="$index == 0" for="action" class="form-label"
+                      >Action</label
+                    >
+                    <div
+                      class="d-flex justify-content-center align-items-center"
+                    >
+                      <i
+                        ng-if="degrees.length > 1"
+                        ng-click="delRow($index)"
+                        class="fas fa-times p-1"
+                        style="color: red"
+                      ></i>
+                      <i
+                        ng-if="$index == 0"
+                        ng-click="addRow()"
+                        class="fas fa-plus-square p-1"
+                        style="color: slateblue"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- submit -->
+            <div class="input-group mt-3 py-2">
+              <button
+                type="submit"
+                class="btn btn-outline-success mx-auto rounded-0"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal user details -->
+  <div
+    class="modal fade"
+    data-bs-backdrop="static"
+    id="completeDetails"
+    tabindex="-1"
+    aria-labelledby="userDetails"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Complete user data</h4>
+          <button
+            type="button"
+            class="btn-close info-modal-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            data-bs-target="#carousel"
+            data-bs-slide-to="0"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div
+            id="carousel"
+            class="carousel slide"
+            data-bs-ride="carousel"
+            data-bs-interval="false"
+          >
+            <div class="carousel-inner">
+              <div class="carousel-item active position-relative">
+                <img
+                  class="rounded-circle"
+                  ng-if="selectedEmployee.picture"
+                  ng-src="{{selectedEmployee.picture.large}}"
+                  alt=""
+                />
+                <i
+                  ng-if="!selectedEmployee.picture"
+                  class="fas fa-user-circle mb-2"
+                  style="font-size: 5rem"
+                ></i>
+
+                <div
+                  class="py-3 row g-3 text-start"
+                  style="overflow-wrap: break-word"
+                >
+                  <div class="col-md-6">
+                    <p ng-if="selectedEmployee.name.fullname">
+                      <span class="fw-bolder">Name:</span>
+                      {{selectedEmployee.name.fullname}}
+                    </p>
+                    <p ng-if="!selectedEmployee.name.fullname">
+                      <span class="fw-bolder">Name:</span>
+                      {{selectedEmployee.name.title +" "+
+                      selectedEmployee.name.first +" "+
+                      selectedEmployee.name.last}}
+                    </p>
+                  </div>
+
+                  <div class="col-md-6">
+                    <p>
+                      <span class="fw-bolder">Email:</span>
+                      {{selectedEmployee.email}}
+                    </p>
+                  </div>
+
+                  <div class="col-md-6">
+                    <p>
+                      <span class="fw-bolder">Dob:</span>
+                      {{selectedEmployee.dob.date | date}}
+                    </p>
+                  </div>
+
+                  <div class="col-md-6">
+                    <p class="text-capitalize">
+                      <span class="fw-bolder">Gender:</span>
+                      {{selectedEmployee.gender}}
+                    </p>
+                  </div>
+
+                  <div class="col-md-6">
+                    <p ng-if="selectedEmployee.location.address">
+                      <span class="fw-bolder">Address: </span>
+                      {{selectedEmployee.location.address}}
+                    </p>
+                    <p ng-if="!selectedEmployee.location.address">
+                      <span class="fw-bolder">Address: </span
+                      >{{selectedEmployee.location.street.number +" "+
+                      selectedEmployee.location.street.name +", "+
+                      selectedEmployee.location.city +", "+
+                      selectedEmployee.location.country}}
+                    </p>
+                  </div>
+
+                  <div class="col-md-6">
+                    <p>
+                      <span class="fw-bolder">Phone:</span>
+                      {{selectedEmployee.phone}}
+                    </p>
+                  </div>
+
+                  <div class="col-md-6">
+                    <p>
+                      <span class="fw-bolder">Age:</span>
+                      {{selectedEmployee.dob.age}}
+                    </p>
+                  </div>
+                </div>
+                <i
+                  class="fas fa-arrow-right fs-5 position-absolute"
+                  data-bs-target="#carousel"
+                  data-bs-slide-to="1"
+                  aria-label="Slide 2"
+                  style="bottom: 10px"
+                ></i>
+              </div>
+              <div class="carousel-item position-relative">
+                <h5 class="pb-2">Education & Qualification</h5>
+                <div ng-if="!selectedEmployee.degrees" class="text-center">
+                  No data Available
+                </div>
+                <div
+                  class="row py-2 text-start degree-info"
+                  ng-repeat="degree in selectedEmployee.degrees"
+                >
+                  <div class="col fw-bolder ps-4">
+                    <p>Degree:</p>
+                    <p>Institute:</p>
+                    <p>Start Date:</p>
+                    <p>End Date:</p>
+                    <p>Marks:</p>
+                  </div>
+                  <div class="col">
+                    <p>{{degree.education}}</p>
+                    <p>{{degree.institute}}</p>
+                    <p>{{degree.startDate | date}}</p>
+                    <p>{{degree.endDate | date}}</p>
+                    <p>{{degree.marks}}</p>
+                  </div>
+                </div>
+                <div style="height: 30px"></div>
+                <i
+                  class="fas fa-arrow-left fs-5 pt-3 position-absolute"
+                  data-bs-target="#carousel"
+                  data-bs-slide-to="0"
+                  aria-current="true"
+                  aria-label="Slide 1"
+                  style="bottom: 10px"
+                ></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-between">
+          <!-- Edit user -->
+          <button
+            ng-click="editUser(selectedEmployee)"
+            type="button"
+            class="btn btn-outline-primary rounded-0"
+            data-bs-toggle="modal"
+            data-bs-target="#formModal"
+            data-bs-dismiss="modal"
+          >
+            Edit
+          </button>
+          <!-- Delete user -->
+          <button
+            type="button"
+            class="btn btn-outline-danger rounded-0"
+            data-bs-dismiss="modal"
+            ng-click="deleteUser(selectedEmployee)"
+            data-bs-target="#carousel"
+            data-bs-slide-to="0"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- add message -->
+  <div class="alert alert-primary py-2" style="display: none">
+    <div><strong>New User Added</strong></div>
+  </div>
+  <!-- update message -->
+  <div class="alert alert-info py-2" style="display: none">
+    <div><strong>User info updated</strong></div>
+  </div>
+  <!-- delete message -->
+  <div class="alert alert-danger py-2" style="display: none">
+    <div><strong>User deleted</strong></div>
+  </div>
+</div>

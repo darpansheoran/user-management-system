@@ -1,0 +1,153 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap");
+html,
+body {
+  height: 100%;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  background-color: #f4f4f4;
+}
+a {
+  cursor: pointer;
+  text-decoration: none;
+}
+.showcase {
+  min-height: calc(100vh - 110px);
+}
+
+.table-responsive {
+  min-height: 265px;
+}
+/* so that table does not overflows. also table-layout:fixed is faster*/
+.showcase .table {
+  table-layout: fixed;
+  white-space: nowrap;
+}
+/* Set column widths */
+.col-name {
+  width: 22%;
+}
+.col-email {
+  width: 35%;
+}
+.col-gender {
+  width: 10%;
+}
+.col-phone {
+  width: 25%;
+}
+.col-age {
+  width: 8%;
+}
+.table td,
+.table th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.table td {
+  cursor: pointer;
+}
+
+.fa-times,
+.fa-plus-square {
+  font-size: 1.7rem;
+  cursor: pointer;
+}
+.fa-arrow-left,
+.fa-arrow-right,
+.fa-eye,
+.fa-eye-slash,
+.fa-bars,
+.fa-info-circle {
+  cursor: pointer;
+}
+
+.carousel-item {
+  min-height: 350px;
+}
+.degree-info:nth-of-type(odd) {
+  background: rgb(224, 224, 224);
+}
+
+// sidebar
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  background-color: #15202b;
+  overflow-x: hidden;
+  transition: 0.4s;
+}
+
+/* media queries */
+@media only screen and (max-width: 760px),
+  (min-device-width: 768px) and (max-device-width: 1024px) {
+  .showcase {
+    width: 90% !important;
+  }
+
+  /* make table responsive for mobiles */
+  /* Zebra striping */
+  tr:nth-of-type(odd) {
+    background: rgb(224, 224, 224);
+  }
+  /* Force table to not be like tables anymore */
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+  /* Hide table headers (but not display: none;, for accessibility) */
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  tr {
+    border: 1px solid #ccc;
+  }
+
+  td {
+    /* Behave  like a "row" */
+    text-align: left;
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 30% !important;
+  }
+
+  td:before {
+    /* Now like a table header */
+    position: absolute;
+    font-weight: bold;
+    text-align: left;
+    /* Top/left values mimic padding */
+    top: 8px;
+    left: 8px;
+    width: 25%;
+    white-space: nowrap;
+  }
+  /*
+	Label the data
+	*/
+  td:nth-of-type(1):before {
+    content: "Name:";
+  }
+  td:nth-of-type(2):before {
+    content: "Email:";
+  }
+  td:nth-of-type(3):before {
+    content: "Phone:";
+  }
+  td:nth-of-type(4):before {
+    content: "Gender:";
+  }
+  td:nth-of-type(5):before {
+    content: "Age:";
+  }
+}

@@ -1,0 +1,113 @@
+<div
+  class="d-flex justify-content-center align-items-center"
+  style="height: 100%"
+>
+  <div class="register-form px-3" style="width: 400px">
+    <form name="form" ng-submit="formSubmit()" role="form">
+      <h3>Register</h3>
+
+      <div
+        ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }"
+        ng-if="flash"
+        ng-bind="flash.message"
+      ></div>
+
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="floatingInput"
+          placeholder="First Name"
+          ng-model="firstName"
+          required
+        />
+        <label for="floatingInput">First name</label>
+      </div>
+
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="floatingInput2"
+          placeholder="Last name"
+          ng-model="lastName"
+          required
+        />
+        <label for="floatingInput2">Last name</label>
+      </div>
+
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="floatingInput3"
+          placeholder="Username"
+          ng-model="userName"
+          required
+        />
+        <label for="floatingInput3">Username</label>
+      </div>
+
+      <div class="form-floating position-relative">
+        <input
+          type="{{ typePassword ? 'text' : 'password' }}"
+          class="form-control pe-5"
+          id="floatingInput4"
+          placeholder="Password"
+          ng-model="password"
+          required
+        />
+        <label for="floatingInput4">Password</label>
+        <i
+          ng-click="togglePassword()"
+          class="far {{ typePassword ? 'fa-eye' : 'fa-eye-slash' }} position-absolute top-50 translate-middle end-0 fs-5"
+        ></i>
+      </div>
+
+      <div class="form-floating position-relative">
+        <input
+          type="{{ typePassword2 ? 'text' : 'password' }}"
+          class="form-control pe-5"
+          id="floatingInput5"
+          placeholder="Confirm Password"
+          ng-model="confirmPassword"
+          required
+        />
+        <label for="floatingInput5">Confirm Password</label>
+        <i
+          ng-click="togglePassword2()"
+          class="far {{ typePassword2 ? 'fa-eye' : 'fa-eye-slash' }} position-absolute top-50 translate-middle end-0 fs-5"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Tooltip on top"
+        ></i>
+        <i
+          class="
+            fas
+            fa-info-circle
+            position-absolute
+            top-50
+            start-100
+            translate-middle
+            ms-3
+          "
+          data-bs-toggle="tooltip"
+          data-bs-placement="right"
+          title="Eight or more characters, with at least one lowercase letter, one uppercase letter and one number."
+        ></i>
+      </div>
+
+      <button
+        type="submit"
+        ng-disabled="form.$invalid"
+        class="w-100 btn btn-lg btn-primary rounded-0"
+      >
+        Register
+      </button>
+
+      <p class="mt-2">
+        <a ui-sref="login">Cancel</a>
+      </p>
+    </form>
+  </div>
+</div>
